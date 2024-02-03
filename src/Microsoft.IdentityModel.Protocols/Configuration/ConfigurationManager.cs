@@ -138,6 +138,11 @@ namespace Microsoft.IdentityModel.Protocols
 
         /// <summary>
         /// Obtains an updated version of Configuration.
+        /// 
+        /// 核心 _configRetriever.GetConfigurationAsync
+        ///     doc = _docRetriever.GetDocumentAsync
+        ///     OpenIdConnectConfigurationSerializer.Read(doc) // 解析 http message
+        /// + 缓存逻辑 _syncAfter
         /// </summary>
         /// <param name="cancel">CancellationToken</param>
         /// <returns>Configuration of type T.</returns>
@@ -156,6 +161,7 @@ namespace Microsoft.IdentityModel.Protocols
                 {
                     try
                     {
+                        // 挺有意思的一个点，多个request共享的一些错做不能用单个request的cancellationToken
                         // Don't use the individual CT here, this is a shared operation that shouldn't be affected by an individual's cancellation.
                         // The transport should have it's own timeouts, etc..
                         var configuration = await _configRetriever.GetConfigurationAsync(MetadataAddress, _docRetriever, CancellationToken.None).ConfigureAwait(false);

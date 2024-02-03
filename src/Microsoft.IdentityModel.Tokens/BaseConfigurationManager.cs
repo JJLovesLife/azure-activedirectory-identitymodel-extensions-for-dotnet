@@ -13,6 +13,8 @@ namespace Microsoft.IdentityModel.Tokens
 {
     /// <summary>
     /// Represents a generic configuration manager.
+    /// 
+    /// Some possible implementation: ConfigurationManager<T>,  StaticConfigurationManager<T>
     /// </summary>
     public abstract class BaseConfigurationManager
     {

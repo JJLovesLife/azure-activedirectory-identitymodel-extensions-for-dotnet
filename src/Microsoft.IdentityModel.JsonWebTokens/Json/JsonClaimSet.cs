@@ -23,7 +23,7 @@ namespace Microsoft.IdentityModel.JsonWebTokens
         internal const string ClassName = "Microsoft.IdentityModel.JsonWebTokens.JsonClaimSet";
 
         internal object _claimsLock = new();
-        internal readonly Dictionary<string, object> _jsonClaims;
+        internal readonly Dictionary<string, object> _jsonClaims;   // directed created from JSON
         private List<Claim> _claims;
 
         internal JsonClaimSet() { _jsonClaims = new Dictionary<string, object>(); }

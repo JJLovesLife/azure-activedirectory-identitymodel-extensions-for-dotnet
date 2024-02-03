@@ -643,6 +643,7 @@ namespace Microsoft.IdentityModel.JsonWebTokens
             {
                 try
                 {
+                    // get "/.well-known/openid-configuration"
                     currentConfiguration = await validationParameters.ConfigurationManager.GetBaseConfigurationAsync(CancellationToken.None).ConfigureAwait(false);
                 }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -832,6 +833,7 @@ namespace Microsoft.IdentityModel.JsonWebTokens
 
         private static JsonWebToken ValidateSignatureAndIssuerSecurityKey(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
         {
+            // validate the signature, and find the signing key validate
             JsonWebToken validatedToken = ValidateSignature(jsonWebToken, validationParameters, configuration);
             Validators.ValidateIssuerSecurityKey(validatedToken.SigningKey, jsonWebToken, validationParameters, configuration);
 
@@ -879,6 +881,7 @@ namespace Microsoft.IdentityModel.JsonWebTokens
             bool kidMatched = false;
             IEnumerable<SecurityKey> keys = null;
 
+            // skip valid if allowed
             if (!jwtToken.IsSigned)
             {
                 if (validationParameters.RequireSignedTokens)
@@ -887,6 +890,7 @@ namespace Microsoft.IdentityModel.JsonWebTokens
                     return jwtToken;
             }
 
+            // 获取Signing Key
             if (validationParameters.IssuerSigningKeyResolverUsingConfiguration != null)
             {
                 keys = validationParameters.IssuerSigningKeyResolverUsingConfiguration(jwtToken.EncodedToken, jwtToken, jwtToken.Kid, validationParameters, configuration);
@@ -897,6 +901,7 @@ namespace Microsoft.IdentityModel.JsonWebTokens
             }
             else
             {
+                // first from config, then from parameters
                 var key = JwtTokenUtilities.ResolveTokenSigningKey(jwtToken.Kid, jwtToken.X5t, validationParameters, configuration);
                 if (key != null)
                 {
